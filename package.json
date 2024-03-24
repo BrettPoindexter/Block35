@@ -1,0 +1,17 @@
+{
+  "name": "block35",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start:dev": "nodemon server/index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.19.1",
+    "nodemon": "^3.1.0",
+    "pg": "^8.11.3"
+  }
+}
