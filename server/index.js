@@ -49,13 +49,18 @@ app.post('/api/users/:id/favorites', async (req, res, next) => {
     }
 });
 
-app.delete('/api/users/:user_id/favorties/:id', async (req, res, next) => {
+app.delete('/api/users/:user_id/favorites/:id', async (req, res, next) => {
     try {
-        
+        await destroyFavorite({
+            user_id: req.params.user_id,
+            id: req.params.id
+        });
+        res.sendStatus(204);
     } catch (err) {
         next(err);
     }
 });
+
 
 const init = async () => {
     client.connect();
