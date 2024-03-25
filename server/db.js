@@ -50,7 +50,7 @@ const createFavorite = async ({user_id, product_id}) => {
 
     const response = await client.query(SQL, [uuid.v4(), user_id, product_id]);
     return response.rows;
-}
+};
 
 const fetchUsers = async () => {
     const SQL = `SELECT * FROM users;`;
@@ -73,18 +73,19 @@ const fetchFavorites = async (user_id) => {
     return response.rows[0];
 };
 
-const destroyFavorite = async ({id, user_id}) => {
+const destroyFavorite = async ({user_id, id}) => {
     const SQL = `DELETE FROM favorite WHERE id=$1 AND user_id=$2;`;
 
-    const response = await client.query(SQL, [id, user_id]);
-}
+    const response = await client.query(SQL, [user_id, id]);
+    return response;
+};
 
 const seed = async () => {
     const brett = await createUsers('Brett', 'brett123');
     const meagan = await createUsers('Meagan', 'meagan123');
     const shirt = await createProduct('Shirt');
     const hat = await createProduct('Hat');
-
+    
     const [fav1, fav2] = await Promise.all([
         createFavorite({
             user_id: brett.id,
@@ -95,13 +96,15 @@ const seed = async () => {
             product_id: shirt.id
         })
     ]);
+    const brettFav = await fetchFavorites(brett.id);
+    console.log('brettFav: ', brettFav.id, brettFav.user_id);
 
     console.log('Users are: ', await fetchUsers());
     console.log('Products are: ', await fetchProducts());
     console.log('Favorites are: ', await fetchFavorites(brett.id));
     console.log(`curl localhost:3000/users/${brett.id}/favorites`);
-    console.log(`curl -X POST localhost:3000/api/users/${brett.id}/favorites -d '{"user_id": "${brett.id}", "product_id": "${hat.id}"}' -H 'Content-Type:application/json'`);
-
+    console.log(`curl -X POST localhost:3000/api/users/${brett.id}/favorites -d '{"id": "${shirt.id}"}' -H 'Content-Type:application/json'`);
+    console.log(`curl localhost:3000/api/${brettFav.user_id}/favorites/${brettFav.id} -X DELETE`);
 }
 
 module.exports = {
